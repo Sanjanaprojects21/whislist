@@ -1,0 +1,25 @@
+{
+  "name": "wishlist",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@mendable/firecrawl-js": "^4.25.3",
+    "lucide-react": "0.468.0",
+    "next": "^16.2.9",
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "@types/react": "19.0.2",
+    "@types/react-dom": "19.0.2",
+    "typescript": "5.7.2"
+  }
+}
