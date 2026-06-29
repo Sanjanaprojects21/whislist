@@ -45,11 +45,38 @@ function getFirecrawlApp() {
   return new FirecrawlAppV1({ apiKey });
 }
 
+function isMeeshoUrl(url: string) {
+  try {
+    return new URL(url).hostname.includes("meesho.com");
+  } catch {
+    return false;
+  }
+}
+
 export async function scrapeProduct(url: string): Promise<ScrapedProduct> {
   new URL(url);
+  const useMeeshoScrapeSettings = isMeeshoUrl(url);
 
   const result = await getFirecrawlApp().scrapeUrl(url, {
     formats: ["extract"],
+    ...(useMeeshoScrapeSettings
+      ? {
+          headers: {
+            Accept:
+              "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/jpeg,*/*;q=0.8",
+            "Accept-Language": "en-IN,en;q=0.9",
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+          },
+          location: {
+            country: "IN",
+            languages: ["en-IN", "en"]
+          },
+          mobile: false,
+          proxy: "stealth" as const,
+          waitFor: 3000
+        }
+      : {}),
     extract: {
       schema: ProductJsonSchema as never,
       prompt:
@@ -62,6 +89,10 @@ export async function scrapeProduct(url: string): Promise<ScrapedProduct> {
   }
 
   const product = ProductSchema.parse(result.extract);
+
+  if (/access\s+denied/i.test(product.title)) {
+    throw new Error("Meesho returned an Access Denied page instead of product details. Try again in a minute.");
+  }
 
   const imageCandidates = [
     product.image,

@@ -56,7 +56,7 @@ export default function HeroSearch() {
       if (!response.ok || !data.product) {
         const message =
           data.stage === "scrape"
-            ? "Scraping failed before category analysis. Check FIRECRAWL_API_KEY."
+            ? data.error || "Scraping failed before category analysis."
             : data.error || "Unable to extract product.";
         throw new Error(message);
       }
