@@ -113,7 +113,7 @@ function parseScrapedProduct(result: Awaited<ReturnType<FirecrawlAppV1["scrapeUr
     .map((candidate) => normalizeProductImageUrl(candidate, url))
     .find((candidate): candidate is string => Boolean(candidate));
 
-  const meeshoProductId = getMeeshoProductId(url);
+  const meeshoProductId = isMeeshoUrl(url) ? getMeeshoProductId(url) : null;
 
   if (
     meeshoProductId &&
